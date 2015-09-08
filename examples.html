@@ -1,0 +1,407 @@
+<!doctype html>
+<html>
+<!--
+Copyright 2015 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<head>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="layervis.js"></script>
+  <link href="layervis.css" rel="stylesheet">
+  <script src="keyboardhelper.js"></script>
+  <link href="keyboardhelper.css" rel="stylesheet">
+</head>
+<body>
+
+
+<div class="layervis example-cards">
+  <div class="layervis-root framelayout">
+
+    <div class="nolayer linearlayout vertical">
+      <div class="card" style="margin-top: 24px" data-elevation="2">
+        <span class="card-image" style="background-color: #00BCD4"></span>
+        <span class="card-title">Bacon</span>
+        <span class="card-desc">Bacon ipsum dolor amet pork belly meatball kevin spare ribs. Frankfurter swine corned beef meatloaf, strip steak.</span>
+      </div>
+      <div class="card" style="position: relative;" data-elevation="2">
+        <span class="card-image" style="background-color: #FFC107"></span>
+        <span class="card-title">Ribs</span>
+        <span class="card-desc">Bacon ipsum dolor amet pork belly meatball kevin spare ribs. Frankfurter swine corned beef meatloaf, strip steak.</span>
+      </div>
+    </div>
+
+    <div class="appbar" data-elevation="4">
+      <svg style="left: 16px;" width="24" height="24" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+      <span class="title">Screen Title</span>
+      <svg style="right: 16px;" width="8" height="24" viewBox="8 0 8 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+    </div>
+
+    <div class="fab" data-elevation="4">
+      <svg width="24" height="24" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+<div class="layervis example-notes">
+  <div class="layervis-root framelayout">
+
+    <div class="slice" style="width:100%;height:100%">
+      <img src="example-images/notes_appbar.png">
+    </div>
+
+    <!-- cards -->
+    <div class="card slice" style="width: 168px; height: 128px; left: 8px; top: 56px" data-elevation="2">
+      <img src="example-images/notes_1.png">
+    </div>
+    <div class="card slice" style="width: 168px; height: 224px; left: 184px; top: 56px" data-elevation="2">
+      <img src="example-images/notes_2.png">
+    </div>
+    <div class="card slice" style="width: 168px; height: 188px; left: 8px; top: 192px" data-elevation="2">
+      <img src="example-images/notes_3.png">
+    </div>
+    <div class="card slice" style="width: 168px; height: 56px; left: 184px; top: 288px" data-elevation="2">
+      <img src="example-images/notes_4.png">
+    </div>
+    <div class="card slice" style="width: 168px; height: 160px; left: 8px; top: 388px" data-elevation="2">
+      <img src="example-images/notes_5.png">
+    </div>
+    <div class="card slice" style="width: 168px; height: 216px; left: 184px; top: 352px" data-elevation="2">
+      <img src="example-images/notes_6.png">
+    </div>
+
+    <div class="fab" data-elevation="4">
+      <svg width="24" height="24" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+<div class="layervis example-pinheader">
+  <div class="layervis-root framelayout">
+
+    <div class="list" class="linearlayout vertical" data-elevation="0.01" style="background: #fff; top: 168px; bottom: 0; overflow: hidden;">
+      <div class="list-item nolayer">
+        <span class="item-title">Bacon</span>
+        <span class="item-desc">Bacon ipsum dolor amet pork belly meatball kevin spare ribs. Frankfurter swine corned beef meatloaf, strip steak.</span>
+      </div>
+      <div class="list-item nolayer">
+        <span class="item-title">Bacon</span>
+        <span class="item-desc">Bacon ipsum dolor amet pork belly meatball kevin spare ribs. Frankfurter swine corned beef meatloaf, strip steak.</span>
+      </div>
+      <div class="list-item nolayer">
+        <span class="item-title">Bacon</span>
+        <span class="item-desc">Bacon ipsum dolor amet pork belly meatball kevin spare ribs. Frankfurter swine corned beef meatloaf, strip steak.</span>
+      </div>
+      <div class="list-item nolayer">
+        <span class="item-title">Bacon</span>
+        <span class="item-desc">Bacon ipsum dolor amet pork belly meatball kevin spare ribs. Frankfurter swine corned beef meatloaf, strip steak.</span>
+      </div>
+      <div class="list-item nolayer">
+        <span class="item-title">Bacon</span>
+        <span class="item-desc">Bacon ipsum dolor amet pork belly meatball kevin spare ribs. Frankfurter swine corned beef meatloaf, strip steak.</span>
+      </div>
+    </div>
+
+    <div class="appbar" data-elevation="0.01">
+      <svg style="left: 16px;" width="24" height="24" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+      <span class="title">Screen Title</span>
+      <svg style="right: 16px;" width="8" height="24" viewBox="8 0 8 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+KEYS = KEYS.concat([
+
+  {
+    key: '2',
+    info: '2D view',
+    press: function() {
+      LayerVis.changeView($('.layervis'), 'flat');
+    }
+  },
+
+  {
+    key: '3',
+    info: '3D view',
+    press: function() {
+      LayerVis.changeView($('.layervis'), '3d');
+    }
+  },
+
+  {
+    key: 'r',
+    info: 'Reset',
+    press: function() {
+      $('.fab').attr('data-elevation', 4);
+      animatePinHeader(0);
+    }
+  },
+
+  {
+    key: 'a',
+    info: 'Run example animations',
+    press: function() {
+      $({ elev: 4 })
+          .animate({ elev: 10 }, {
+            duration: 1000,
+            step: function(elev) {
+              $('.fab').attr('data-elevation', elev);
+            }
+          });
+
+      $({ t: 0 })
+          .animate({ t: 1 }, {
+            duration: 2000,
+            step: function(t) {
+              animatePinHeader(t);
+            }
+          });
+    }
+  },
+
+]);
+
+function animatePinHeader(t) {
+
+  function progress(f, min, max) { return (f - min) / (max - min); }
+  function interpolate(f, min, max) { return min + f * (max - min); }
+  function interpolateCap(f, min, max) {
+    if (max < min) return interpolateCap(1 - f, max, min);
+    return constrain(interpolate(f, min, max), min, max);
+  }
+  function constrain(f, min, max) {
+    if (f < min) return min;
+    else if (f > max) return max;
+    return f;
+  }
+
+  var $el = $('.example-pinheader');
+
+  var t1 = progress(t, 0, 1);
+  var unfilteredOffset = interpolate(t, 168, 0);
+  var offset = Math.floor(unfilteredOffset);
+  var elevation = interpolateCap(progress(unfilteredOffset, 56, 0), 0, 4);
+
+  $el.find('.list').css('top', offset + 'px');
+  $el.find('.appbar')
+      .height(Math.max(56, offset) + 'px')
+      .attr('data-elevation', elevation);
+
+  LayerVis.make($el);
+}
+
+</script>
+
+<style>
+
+/* general */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: row;
+}
+
+.layervis {
+  flex: 1 0 auto;
+}
+
+.layervis-root {
+  background-color: #e5e5e5;
+  width: 360px;
+  height: 640px;
+}
+
+.fab {
+  right: 16px;
+  bottom: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+}
+
+.fab svg {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  left: 50%;
+  top: 50%;
+  margin-left: -12px;
+  margin-top: -12px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+/* cards example */
+
+.example-cards .appbar {
+  background-color: #3f51b5;
+  width: 100%;
+  height: 56px
+}
+
+.example-cards .card {
+  margin: 8px;
+}
+
+.example-cards .card + .card {
+  margin-top: 0;
+}
+
+.example-cards .card-image,
+.example-cards .card-title,
+.example-cards .card-desc {
+  display: block;
+}
+
+.example-cards .card-image {
+  height: 164px;
+  background-size: cover;
+}
+
+.example-cards .card-title {
+  margin: 16px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #000;
+}
+
+.example-cards .card-desc {
+  margin: -8px 16px 16px 16px;
+  font-size: 14px;
+  color: #888;
+  line-height: 18px;
+}
+
+.example-cards .appbar {
+  fill: white;
+  color: #fff;
+}
+
+.example-cards .appbar svg {
+  position: absolute;
+  height: 24px;
+  top: 16px;
+}
+
+.example-cards .appbar .title {
+  position: absolute;
+  left: 72px;
+  line-height: 56px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.example-cards .fab {
+  background-color: #ff4081;
+  fill: white;
+}
+
+/* notes example */
+
+.example-notes .card {
+  position: relative;
+  height: 104px;
+}
+
+.example-notes .slice img {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.example-notes .fab {
+  background-color: #eeff41;
+  fill: #777f20;
+}
+
+/* pin-header example */
+
+.example-pinheader .appbar {
+  background-color: #3f51b5;
+  width: 100%;
+  height: 168px;
+  fill: #fff;
+  color: #fff;
+}
+
+.example-pinheader .appbar svg {
+  position: absolute;
+  height: 24px;
+  top: 16px;
+}
+
+.example-pinheader .appbar .title {
+  position: absolute;
+  left: 72px;
+  bottom: 0;
+  line-height: 56px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.example-pinheader .list-item {
+  padding: 16px 16px 16px 72px;
+  overflow: hidden;
+}
+
+.example-pinheader .list-item + .list-item {
+  border-top: 1px solid #eee;
+}
+
+.example-pinheader .item-title,
+.example-pinheader .item-desc {
+  display: block;
+}
+
+.example-pinheader .item-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #000;
+}
+
+.example-pinheader .item-desc {
+  font-size: 14px;
+  color: #888;
+  line-height: 18px;
+}
+
+</style>
+
+</body>
+</html>

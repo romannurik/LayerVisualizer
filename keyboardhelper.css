@@ -1,0 +1,15 @@
+.keyboardhelp {
+  font-family: Roboto;
+  background-color: rgba(0,0,0,0.8);
+  color: #ccc;
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  padding: 8px;
+  border-radius: 8px;
+  z-index: 1000;
+}
+
+.keyboardhelp code {
+  color: #fff;
+}
