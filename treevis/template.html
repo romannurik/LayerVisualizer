@@ -3,16 +3,15 @@
 <head>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <link href="//fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet">
-  <script src="layervis.js"></script>
-  <link href="layervis.css" rel="stylesheet">
+  <script src="treevis.js"></script>
+  <link href="treevis.css" rel="stylesheet">
 </head>
 <body>
 
+<div class="treevis">
+  <div class="treevis-root framelayout" style="width: 360px; height: 640px; background-color: #e5e5e5">
 
-<div class="layervis">
-  <div class="layervis-root framelayout" style="width: 360px; height: 640px; background-color: #e5e5e5">
-
-    <div class="nolayer" style="margin-left: 16px; margin-top: 72px">
+    <div class="textview" style="box-sizing: border-box; padding-left: 16px; padding-top: 16px; position: absolute; top: 56px; left: 0; right: 0; bottom: 0;">
       Hi there!
     </div>
 
@@ -37,15 +36,38 @@
   </div>
 </div>
 
+<div class="xmltree">
+FrameLayout                                            %.treevis-root
+  LinearLayout orientation=vertical                    %.treevis-root
+    Toolbar layout_height=?actionBarSize               %.appbar
+    TextView layout_weight=1                           %.textview
+  FloatingActionButton layout_gravity=bottom|right     %.fab
+</div>
 
 <style>
 
-.layervis {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: row;
+}
+
+.treevis {
+  flex: 1 0 0;
+  background: #f7f7f7;
+  font-family: Roboto;
+}
+
+.xmltree {
+  background: #fff;
+  flex: 1 0 0;
 }
 
 </style>
