@@ -1,0 +1,296 @@
+<!doctype html>
+<html>
+<!--
+Copyright 2015 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<head>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <link href="//fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet">
+  <script src="layervis.js"></script>
+  <link href="layervis.css" rel="stylesheet">
+</head>
+<body>
+
+
+<div class="layervis">
+  <div class="layervis-root">
+
+    <div class="statusbar noshadow" data-elevation="16"></div>
+    <div class="navbar noshadow" data-elevation="16"></div>
+
+    <div class="banner"></div>
+
+    <div class="body-content" data-elevation="4"></div>
+
+    <div class="toolbar" data-elevation="4">
+      <svg style="left: 16px;" width="24" height="24" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      <span class="title">Material Now</span>
+      <span class="subtitle">Wed 11:30 AM &ndash; 1:00 PM, Room 1</span>
+      <svg style="right: 16px;" width="24" height="24" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+      <div class="fab" data-elevation="6">
+        <svg width="24" height="24" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<input type="range" min="0" max="460" value="0">
+
+
+
+<script>
+
+var LAYERVIS_ELEVATION_SCALE = 4;
+var LAYERVIS_PERSPECTIVE = 0;
+
+var startToolbarTop = 240;
+var toolbarHeight = 112;
+var toolbarElevObj = { elev: 4 };
+var toolbarAnimatingToElev = 0;
+
+function updateScroll() {
+  var scroll = Number($('input[type=range]').val());
+
+  function progress(f, min, max) { return (f - min) / (max - min); }
+  function interpolate(f, min, max) { return min + f * (max - min); }
+  function interpolateCap(f, min, max) {
+    if (max < min) return interpolateCap(1 - f, max, min);
+    return constrain(interpolate(f, min, max), min, max);
+  }
+  function constrain(f, min, max) {
+    if (f < min) return min;
+    else if (f > max) return max;
+    return f;
+  }
+
+  $('.banner').css({top: -scroll / 2});
+  $('.toolbar').css({top: Math.max(24, startToolbarTop - scroll)});
+  $('.body-content').css({top: startToolbarTop + toolbarHeight - scroll});
+
+  var desiredToolbarElev = (startToolbarTop - scroll <= 24) ? 8 : 4;
+  if (toolbarElevObj.elev != desiredToolbarElev) {
+    var runAnimation = true;
+    if (toolbarAnimatingToElev) {
+      // animation underway
+      if (desiredToolbarElev != toolbarAnimatingToElev) {
+        $(toolbarElevObj).stop();
+      } else {
+        runAnimation = false;
+      }
+    }
+
+    if (runAnimation) {
+      toolbarAnimatingToElev = desiredToolbarElev;
+      $(toolbarElevObj)
+          .animate({ elev: desiredToolbarElev }, {
+            duration: 300,
+            step: function(val, fx) {
+              $('.toolbar').attr('data-elevation', val);
+              $('.fab').attr('data-elevation', 2 + val);
+              var t = progress(val, 4, 8);
+              $('.statusbar').css('background-color',
+                  'rgba(0,' + interpolateCap(t, 0, 188).toFixed(0)
+                    + ',' + interpolateCap(t, 0, 212).toFixed(0)
+                    + ',' + interpolateCap(t, 0.4, 1) + ')');
+              LayerVis.make($('.layervis'));
+            }
+          });
+    }
+  }
+
+  LayerVis.make($('.layervis'));
+}
+
+$(document).ready(function() {
+  $('input[type=range]').on('input', updateScroll);
+  updateScroll();
+});
+
+</script>
+
+<style>
+
+/* general */
+
+body {
+  background: #f7f7f7;
+}
+
+.layervis {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 60px;
+  bottom: 0;
+}
+
+.layervis-processed-root.view-flat {
+  transform: perspective(0);
+}
+
+input[type="range"] {
+  position: absolute;
+  width: 300px;
+  top: 50%;
+  margin-top: -150px;
+  right: 30px;
+  transform: rotate(270deg);
+  transform-origin: 100% 0;
+}
+
+.layervis-root {
+  background-color: #e5e5e5;
+  width: 360px;
+  height: 640px;
+  overflow: hidden;
+}
+
+.statusbar {
+  position: absolute;
+  top: 0;
+  width: 360px;
+  height: 24px;
+  background-color: rgba(0,0,0,0.3);
+  background-image: url(example-images/iosched_statusbar.png);
+  background-size: contain;
+}
+
+.navbar {
+  position: absolute;
+  bottom: 0;
+  width: 360px;
+  height: 48px;
+  background: url(example-images/iosched_navbar.png);
+  background-size: contain;
+}
+
+.body-content {
+  position: absolute;
+  top: calc(240px + 112px);
+  width: 360px;
+  height: 700px;
+  background-color: white;
+  background-image: url(example-images/iosched_body.png);
+  background-size: cover;
+  background-position: 0% 0%;
+}
+
+.banner {
+  position: absolute;
+  width: 360px;
+  height: 240px;
+  background-image: url(example-images/iosched_session.png);
+  background-size: cover;
+}
+
+.fab {
+  position: absolute;
+  left: 16px;
+  bottom: -20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #EEFF21;
+  fill: rgba(0,0,0,0.54);
+}
+
+.fab svg {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  left: 50%;
+  top: 50%;
+  margin-left: -12px;
+  margin-top: -12px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.card {
+  margin: 8px;
+}
+
+.card + .card {
+  margin-top: 0;
+}
+
+.card-image,
+.card-title,
+.card-desc {
+  display: block;
+}
+
+.card-image {
+  height: 164px;
+  background-size: cover;
+}
+
+.card-title {
+  margin: 16px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #000;
+}
+
+.card-desc {
+  margin: -8px 16px 16px 16px;
+  font-size: 14px;
+  color: #888;
+  line-height: 18px;
+}
+
+.toolbar {
+  fill: rgba(0,0,0,0.54);
+  color: rgba(0,0,0,0.87);
+  position: absolute;
+  top: 240px;
+  background-color: #26C6DA;
+  width: 100%;
+  height: 112px
+}
+
+.toolbar svg {
+  position: absolute;
+  height: 24px;
+  top: 16px;
+}
+
+.toolbar .title {
+  position: absolute;
+  left: 72px;
+  top: 48px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.toolbar .subtitle {
+  position: absolute;
+  left: 72px;
+  top: calc(48px + 28px);
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(0,0,0,0.54);
+}
+
+</style>
+
+</body>
+</html>

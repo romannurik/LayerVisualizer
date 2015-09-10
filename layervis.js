@@ -15,6 +15,8 @@
  */
 
 var LAYERVIS_DISABLE_3D_PANNING = false;
+var LAYERVIS_ELEVATION_SCALE = 6;
+var LAYERVIS_PERSPECTIVE = 1000;
 
 (function() {
   /**
@@ -104,6 +106,8 @@ var LAYERVIS_DISABLE_3D_PANNING = false;
   function makeOnce($container) {
     $container.removeClass('_processed');
     var $root = $container.children('.layervis-root');
+    var rootWidth = $root.width();
+    var rootHeight = $root.height();
 
     var rootOffset = $root.offset();
 
@@ -114,8 +118,8 @@ var LAYERVIS_DISABLE_3D_PANNING = false;
       elevation: 0,
       left: 0,
       top: 0,
-      width: $root.width(),
-      height: $root.height()
+      width: rootWidth,
+      height: rootHeight
     });
 
     $root.find('div').each(function() {
@@ -136,7 +140,8 @@ var LAYERVIS_DISABLE_3D_PANNING = false;
         left: position.left,
         top: position.top,
         width: $layer.width(),
-        height: $layer.height()
+        height: $layer.height(),
+        noshadow: !!$layer.hasClass('noshadow')
       });
     });
 
@@ -152,8 +157,8 @@ var LAYERVIS_DISABLE_3D_PANNING = false;
           .appendTo($('<div>')
                 .attr('class', 'layervis-processed-root-positioner')
                 .css({
-                  width: $root.width(),
-                  height: $root.height()
+                  width: rootWidth,
+                  height: rootHeight
                 })
                 .appendTo($container));
     }
@@ -161,6 +166,12 @@ var LAYERVIS_DISABLE_3D_PANNING = false;
 
     // arrange layers orthographically
     layers.forEach(function(layer) {
+      var $layerHolder = $('<div>')
+          .addClass('layer-holder')
+          .css({
+            transform: 'translate3d(0,0,' + (layer.elevation * LAYERVIS_ELEVATION_SCALE) + 'px)'
+          })
+          .appendTo($processedRoot);
       layer.$ = layer.$src.clone()
           .css({
             // resets
@@ -177,10 +188,10 @@ var LAYERVIS_DISABLE_3D_PANNING = false;
             // ortho position
             width: layer.width + 'px',
             height: layer.height + 'px',
-            transform: 'translate3d(' + layer.left + 'px, ' + layer.top + 'px, ' + (layer.elevation * 6) + 'px)'
+            transform: 'translate3d(' + layer.left + 'px, ' + layer.top + 'px, 0)'
           })
           .addClass('layer')
-          .appendTo($processedRoot);
+          .appendTo($layerHolder);
 
       layer.$.find('div:not(.nolayer)').remove();
     });
@@ -190,7 +201,7 @@ var LAYERVIS_DISABLE_3D_PANNING = false;
       for (var j = i - 1; j >= 0; j--) {
         var topLayer = layers[i];
         var bottomLayer = layers[j];
-        if (topLayer.elevation == bottomLayer.elevation) {
+        if (topLayer.elevation == bottomLayer.elevation || topLayer.noshadow) {
           continue;
         }
 
@@ -252,7 +263,6 @@ var LAYERVIS_DISABLE_3D_PANNING = false;
 
           var tx = interpolate(cy, 0, -23);
           var ty = interpolate(cy, 0, 150);
-          var perspective = 1000;
           var rx = interpolate(cy, 0, 70);
           var ry = 0;//interpolate(fx, 0, 30);
           var rz = interpolate(cx, 45, -45);
@@ -261,7 +271,7 @@ var LAYERVIS_DISABLE_3D_PANNING = false;
 
           var transform = '';
 
-          transform += 'perspective(' + perspective + 'px) ';
+          transform += 'perspective(' + LAYERVIS_PERSPECTIVE + 'px) ';
           transform += 'rotateX(' + rx + 'deg) ';
           transform += 'rotateY(' + ry + 'deg) ';
           transform += 'rotateZ(' + rz + 'deg) ';
