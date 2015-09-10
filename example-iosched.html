@@ -116,7 +116,8 @@ function updateScroll() {
 }
 
 $(document).ready(function() {
-  $('input[type=range]').on('input', updateScroll);
+  var $input = $('input[type=range]');
+  $input.on('input', updateScroll);
   updateScroll();
 });
 
@@ -178,83 +179,12 @@ input[type="range"] {
   background-size: contain;
 }
 
-.body-content {
-  position: absolute;
-  top: calc(240px + 112px);
-  width: 360px;
-  height: 700px;
-  background-color: white;
-  background-image: url(example-images/iosched_body.png);
-  background-size: cover;
-  background-position: 0% 0%;
-}
-
 .banner {
   position: absolute;
   width: 360px;
   height: 240px;
   background-image: url(example-images/iosched_session.png);
   background-size: cover;
-}
-
-.fab {
-  position: absolute;
-  left: 16px;
-  bottom: -20px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #EEFF21;
-  fill: rgba(0,0,0,0.54);
-}
-
-.fab svg {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  left: 50%;
-  top: 50%;
-  margin-left: -12px;
-  margin-top: -12px;
-}
-
-.card {
-  background: #fff;
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.card {
-  margin: 8px;
-}
-
-.card + .card {
-  margin-top: 0;
-}
-
-.card-image,
-.card-title,
-.card-desc {
-  display: block;
-}
-
-.card-image {
-  height: 164px;
-  background-size: cover;
-}
-
-.card-title {
-  margin: 16px;
-  font-size: 20px;
-  font-weight: 500;
-  color: #000;
-}
-
-.card-desc {
-  margin: -8px 16px 16px 16px;
-  font-size: 14px;
-  color: #888;
-  line-height: 18px;
 }
 
 .toolbar {
@@ -288,6 +218,38 @@ input[type="range"] {
   font-size: 14px;
   font-weight: 500;
   color: rgba(0,0,0,0.54);
+}
+
+.fab {
+  position: absolute;
+  left: 16px;
+  bottom: -20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #EEFF21;
+  fill: rgba(0,0,0,0.54);
+}
+
+.fab svg {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  left: 50%;
+  top: 50%;
+  margin-left: -12px;
+  margin-top: -12px;
+}
+
+.body-content {
+  position: absolute;
+  top: calc(240px + 112px);
+  width: 360px;
+  height: 700px;
+  background-color: white;
+  background-image: url(example-images/iosched_body.png);
+  background-size: cover;
+  background-position: 0% 0%;
 }
 
 </style>
