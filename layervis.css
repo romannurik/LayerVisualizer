@@ -45,10 +45,14 @@
   transition: transform 1s ease;
   transform-style: preserve-3d;
   -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .layervis-processed-root img {
   -webkit-user-drag: none;
+  -moz-user-drag: none;
+  user-drag: none;
 }
 
 .layervis-processed-root.view-3d {

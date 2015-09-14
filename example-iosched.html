@@ -55,7 +55,7 @@ limitations under the License.
 <script>
 
 var LAYERVIS_ELEVATION_SCALE = 4;
-var LAYERVIS_PERSPECTIVE = 0;
+var LAYERVIS_PERSPECTIVE = Number.MAX_SAFE_INTEGER || 999999999;
 
 var startToolbarTop = 240;
 var toolbarHeight = 112;
@@ -119,6 +119,23 @@ $(document).ready(function() {
   var $input = $('input[type=range]');
   $input.on('input', updateScroll);
   updateScroll();
+  // var min = 0;
+  // var max = $input.attr('max');
+  // animateRange();
+
+  // function animateRange(reverse) {
+  //   $({val: reverse ? max : min})
+  //       .animate({val: reverse ? min : max}, {
+  //         duration: 10000,
+  //         step: function(val) {
+  //           $input.val(val);
+  //           updateScroll();
+  //         },
+  //         done: function() {
+  //           animateRange(!reverse);
+  //         }
+  //       });
+  // }
 });
 
 </script>

@@ -207,6 +207,7 @@ var LAYERVIS_PERSPECTIVE = 1000;
 
         // create a shadow (already ortho'd since it'll be inside bottomLayer)
         var distance = topLayer.elevation - bottomLayer.elevation;
+        var filter = 'blur(' + interpolateCap(progress(distance, 0, 5), MIN_SHADOW_BLUR, MAX_SHADOW_BLUR) + 'px)';
         var $shadow = $('<div>')
             .addClass('shadow')
             .css({
@@ -217,11 +218,12 @@ var LAYERVIS_PERSPECTIVE = 1000;
               opacity: interpolateCap(
                   progress(distance, MAX_SHADOW_DARK_AT, MIN_SHADOW_DARK_AT),
                   MAX_SHADOW_DARK, MIN_SHADOW_DARK),
-              '-webkit-filter': 'blur(' + interpolateCap(progress(distance, 0, 5), MIN_SHADOW_BLUR, MAX_SHADOW_BLUR) + 'px)'
+              '-webkit-filter': filter,
+              'filter': filter,
             });
 
         var computedStyle = getComputedStyle(topLayer.$.get(0));
-        $shadow.css('border-radius', computedStyle.borderRadius);
+        $shadow.css('border-radius', computedStyle.borderRadius || computedStyle.borderTopLeftRadius);
         $shadow.appendTo(bottomLayer.$);
       }
     }
@@ -271,10 +273,11 @@ var LAYERVIS_PERSPECTIVE = 1000;
 
           var transform = '';
 
-          transform += 'perspective(' + LAYERVIS_PERSPECTIVE + 'px) ';
+          transform += 'perspective(' + (LAYERVIS_PERSPECTIVE || Number.MAX_SAFE_INTEGER || 999999999) + 'px) ';
           transform += 'rotateX(' + rx + 'deg) ';
           transform += 'rotateY(' + ry + 'deg) ';
           transform += 'rotateZ(' + rz + 'deg) ';
+          console.log(transform);
 
           $layervis.find('.layervis-processed-root').css('transform', transform);
         })
