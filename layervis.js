@@ -217,11 +217,12 @@ var LAYERVIS_PERSPECTIVE = 1000;
               opacity: interpolateCap(
                   progress(distance, MAX_SHADOW_DARK_AT, MIN_SHADOW_DARK_AT),
                   MAX_SHADOW_DARK, MIN_SHADOW_DARK),
+              'filter': 'blur(' + interpolateCap(progress(distance, 0, 5), MIN_SHADOW_BLUR, MAX_SHADOW_BLUR) + 'px)',
               '-webkit-filter': 'blur(' + interpolateCap(progress(distance, 0, 5), MIN_SHADOW_BLUR, MAX_SHADOW_BLUR) + 'px)'
             });
 
         var computedStyle = getComputedStyle(topLayer.$.get(0));
-        $shadow.css('border-radius', computedStyle.borderRadius);
+        $shadow.css('border-radius', computedStyle.borderTopLeftRadius);
         $shadow.appendTo(bottomLayer.$);
       }
     }
