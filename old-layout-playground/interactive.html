@@ -1,0 +1,388 @@
+<!doctype html>
+<html>
+<head>
+  <script src="codemirror-3.16/lib/codemirror.js"></script>
+  <link href="codemirror-3.16/lib/codemirror.css" rel="stylesheet">
+  <link href="codemirror-3.16/theme/android.css" rel="stylesheet">
+  <link href="codemirror-3.16/addon/hint/show-hint.css" rel="stylesheet">
+  <script src="codemirror-3.16/mode/xml/xml.js"></script>
+  <script src="codemirror-3.16/addon/hint/show-hint.js"></script>
+  <script src="codemirror-3.16/addon/hint/xml-hint.js"></script>
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:regular,medium,thin,italic,mediumitalic,bold" title="roboto">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <style>
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: -webkit-flex;
+      -webkit-align-items: stretch;
+      -webkit-flex-direction: row;
+    }
+
+    #editor-container {
+      height: 100%;
+      width: 0;
+      position: relative;
+      -webkit-flex: 1 1 auto;
+    }
+
+    #editor-container #editor,
+    #editor-container .CodeMirror {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #preview-area {
+      width: 0;
+      background: #eee;
+      position: relative;
+      cursor: se-resize;
+      -webkit-user-select: none;
+
+      -webkit-flex: 1 1 auto;
+
+      display: -webkit-flex;
+      -webkit-align-items: center;
+      -webkit-justify-content: center;
+    }
+
+    #preview-area * {
+      pointer-events: none;
+    }
+
+    #preview-area div {
+      position: relative;
+      background: rgba(0,128,255,0.25);
+      padding: 10px;
+    }
+
+    #preview-area .View {
+      width: 40px;
+      height: 40px;
+    }
+
+    #preview-area .layout_width-match_parent {
+      width: calc(100% - 20px);
+    }
+
+    #preview-area .layout_height-match_parent {
+      height: calc(100% - 20px);
+    }
+
+    /* FrameLayout */
+
+    #preview-area .FrameLayout > div {
+      position: absolute;
+    }
+
+    #preview-area .FrameLayout > .layout_gravity-center,
+    #preview-area .FrameLayout > .layout_gravity-center_horizontal {
+      left: 50%;
+    }
+
+    #preview-area .FrameLayout > .layout_gravity-center,
+    #preview-area .FrameLayout > .layout_gravity-center_vertical {
+      top: 50%;
+    }
+
+    #preview-area .FrameLayout > .layout_gravity-right {
+      right: 10px;
+    }
+
+    #preview-area .FrameLayout > .layout_gravity-bottom {
+      bottom: 10px;
+    }
+
+    /* LinearLayout */
+
+    #preview-area .LinearLayout {
+      display: -webkit-flex;
+      -webkit-flex-direction: row;
+    }
+    #preview-area .LinearLayout > div + div {
+      margin-left: 10px;
+    }
+    #preview-area .LinearLayout.gravity-center {
+      -webkit-align-items: center;
+    }
+    #preview-area .LinearLayout.orientation-vertical {
+      -webkit-flex-direction: column;
+    }
+    #preview-area .LinearLayout.orientation-vertical > div + div {
+      margin-left: 0;
+      margin-top: 10px;
+    }
+    #preview-area .LinearLayout.orientation-horizontal > .layout_height-match_parent {
+      height: auto;
+      -webkit-align-self: stretch;
+    }
+    #preview-area .LinearLayout.orientation-vertical > .layout_width-match_parent {
+      height: auto;
+      -webkit-align-self: stretch;
+    }
+  </style>
+  <script>
+    var preview = {
+      width: 330,
+      height: 600
+    };
+
+    $(document).ready(function() {
+      $('#preview-area')
+          .bind('mousedown', function(evt) {
+            if (evt.button > 0) {
+              return;
+            }
+            preview.dragging = true;
+            preview.startWidth = preview.width;
+            preview.startHeight = preview.height;
+            preview.startX = evt.pageX;
+            preview.startY = evt.pageY;
+          })
+          .bind('mousemove', function(evt) {
+            if (preview.dragging) {
+              preview.width = Math.max(1, preview.startWidth + (evt.pageX - preview.startX) * 2);
+              preview.height = Math.max(1, preview.startHeight + (evt.pageY - preview.startY) * 2);
+              updatePreview();
+            }
+          })
+          .bind('mouseup', function() {
+            preview.dragging = false;
+          });
+
+      requestLayout();
+      updatePreview();
+    });
+
+    function updatePreview() {
+      $('#preview-area > div').css({
+        width: preview.width + 'px',
+        height: preview.height + 'px'
+      });
+    }
+
+    // JavaScript helpers
+    function requestLayout() {
+      $('.FrameLayout > .layout_gravity-center, .FrameLayout > .layout_gravity-center_horizontal').each(function() {
+        $(this).css('margin-left', (-$(this).get(0).offsetWidth / 2) + 'px');
+      });
+      $('.FrameLayout > .layout_gravity-center, .FrameLayout > .layout_gravity-center_vertical').each(function() {
+        $(this).css('margin-top', (-$(this).get(0).offsetHeight / 2) + 'px');
+      });
+    }
+  </script>
+</head>
+<body>
+
+<div id="editor-container">
+<textarea id="editor">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+  <LinearLayout android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+    <View android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="match_parent" />
+
+    <View android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="match_parent" />
+  </LinearLayout>
+
+  <View android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>
+</textarea>
+</div>
+
+<script>
+
+var cm;
+
+// auto complete schema
+
+var dummy = {
+  attrs: {
+    color: ["red", "green", "blue", "purple", "white", "black", "yellow"],
+    size: ["large", "medium", "small"],
+    description: null
+  },
+  children: []
+};
+var allnodes = ["LinearLayout","FrameLayout","View"];
+var tags = {
+  "!top": allnodes,
+  LinearLayout: {
+    attrs: {
+      'android:layout_width': ['match_parent', 'wrap_content'],
+      'android:layout_height': ['match_parent', 'wrap_content'],
+      'android:layout_gravity': ['left', 'top', 'right', 'bottom', 'center_horizontal', 'center_vertical'],
+    },
+    children: allnodes
+  },
+  FrameLayout: {
+    attrs: {
+      'android:layout_width': ['match_parent', 'wrap_content'],
+      'android:layout_height': ['match_parent', 'wrap_content'],
+      'android:layout_gravity': ['left', 'top', 'right', 'bottom', 'center_horizontal', 'center_vertical'],
+    },
+    children: allnodes
+  },
+  View: {
+    attrs: {
+      'android:layout_width': ['match_parent', 'wrap_content'],
+      'android:layout_height': ['match_parent', 'wrap_content'],
+      'android:layout_gravity': ['left', 'top', 'right', 'bottom', 'center_horizontal', 'center_vertical'],
+    },
+    children: allnodes
+  }
+};
+
+$(document).ready(function() {
+  cm = CodeMirror.fromTextArea($('#editor').get(0), {
+    mode: 'xml',
+    lineNumbers: true,
+    theme: 'android',
+    extraKeys: {
+      'Ctrl-Space': 'autocomplete'
+    }
+  });
+  CodeMirror.commands.autocomplete = function(cm) {
+    CodeMirror.showHint(cm, CodeMirror.hint.xml, {
+      schemaInfo: tags
+    });
+  };
+  cm.on('change', function() {
+    parseXML();
+  })
+});
+
+$(document).ready(parseXML);
+
+function parseXML() {
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(cm.getDoc().getValue(), 'text/xml');
+  window.doc = doc;
+
+  var $previewArea = $('#preview-area');
+  $previewArea.empty();
+
+  var error;
+  if (error = doc.querySelector('parsererror')) {
+    errStr = error.innerHTML;
+    console.error(errStr);
+    $previewArea.append($('<div>').addClass('error').html(errStr));
+  } else {
+    buildPreviewDOM(doc.documentElement, $previewArea);
+  }
+
+  requestLayout();
+  updatePreview();
+}
+
+var XMLNS_ANDROID = 'http://schemas.android.com/apk/res/android';
+var NODE_TYPE_ELEMENT = 1;
+
+function buildPreviewDOM(rootNode, container) {
+  if (rootNode == null) {
+    return;
+  }
+
+  var $node = $('<div>');
+  $node.addClass(rootNode.nodeName);
+  for (var i = 0; i < rootNode.attributes.length; i++) {
+    var attr = rootNode.attributes[i];
+    if (attr.namespaceURI != XMLNS_ANDROID) {
+      continue;
+    }
+
+    var attrIntValue = parseInt(attr.nodeValue, 10);
+    if (attr.localName == 'layout_weight') {
+      $node.css('-webkit-flex', attr.nodeValue + ' ' + attr.nodeValue + ' auto');
+    } else if (attr.localName == 'layout_width' && !isNaN(attrIntValue)) {
+      $node.css('width', attrIntValue);
+    } else if (attr.localName == 'layout_height' && !isNaN(attrIntValue)) {
+      $node.css('height', attrIntValue);
+    } else {
+      var values = (attr.nodeValue || '').split('|');
+      for (var v = 0; v < values.length; v++) {
+        $node.addClass(attr.localName + '-' + values[v]);
+      }
+    }
+  }
+
+  for (var i = 0; i < rootNode.childNodes.length; i++) {
+    var child = rootNode.childNodes[i];
+    if (child.nodeType != NODE_TYPE_ELEMENT) {
+      continue;
+    }
+
+    buildPreviewDOM(child, $node);
+  }
+
+  $node.appendTo(container);
+}
+
+</script>
+
+<div id="preview-area">
+ 
+  <div class="LinearLayout orientation-vertical" data-title="LinearLayout Weights">
+    <div class="LinearLayout orientation-horizontal layout_gravity-right layout_width-match_parent">
+      <div class="View"></div>
+      <div class="View layout_weight-1"></div>
+      <div class="View"></div>
+    </div>
+    <div class="LinearLayout orientation-vertical layout_width-match_parent layout_weight-1">
+    </div>
+  </div>
+
+  <div class="FrameLayout" data-title="Simple FrameLayout">
+    <div class="View"></div>
+    <div class="View layout_gravity-center_horizontal"></div>
+    <div class="View layout_gravity-right"></div>
+
+    <div class="View layout_gravity-center_vertical"></div>
+    <div class="View layout_gravity-center"></div>
+    <div class="View layout_gravity-right layout_gravity-center_vertical"></div>
+
+    <div class="View layout_gravity-bottom"></div>
+    <div class="View layout_gravity-bottom layout_gravity-center_horizontal"></div>
+    <div class="View layout_gravity-bottom layout_gravity-right"></div>
+  </div>
+
+
+  <div class="LinearLayout orientation-vertical layout_width-match_parent layout_height-match_parent" data-title="Button Bar">
+    <div class="View layout_weight-1 layout_width-match_parent"></div>
+    <div class="LinearLayout orientation-horizontal layout_width-match_parent">
+      <div class="View layout_weight-1"></div>
+      <div class="View layout_weight-1"></div>
+    </div>
+  </div>
+
+  <div class="LinearLayout orientation-horizontal" data-title="Master/Detail Pane">
+    <div class="View layout_weight-1 layout_height-match_parent"></div>
+    <div class="View layout_weight-3 layout_height-match_parent"></div>
+  </div>
+
+</div>
+
+</body>
+</html>

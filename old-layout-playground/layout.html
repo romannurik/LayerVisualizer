@@ -1,0 +1,291 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:regular,medium,thin,italic,mediumitalic,bold" title="roboto">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <style>
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #tabs {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+    }
+    #tabs > div {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      text-align: center;
+      line-height: 60px;
+      font-size: 24px;
+      font-family: Roboto;
+      font-weight: 300;
+      background: #fff;
+      color: #666;
+      cursor: pointer;
+    }
+    #tabs > div + div {
+      margin-top: 4px;
+    }
+    #tabs > div.selected {
+      background: rgb(255,221,136);
+      color: #111;
+    }
+    #tabs > div .title {
+      display: none;
+      position: absolute;
+      left: 60px;
+      padding: 0 20px 0 10px;
+      background-color: rgba(255,255,255,0.5);
+      top: 0;
+      text-transform: uppercase;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: left;
+      white-space: nowrap;
+      color: #333;
+      pointer-events: none;
+    }
+    #tabs > div.selected .title {
+      background: rgba(255,221,136,0.5);
+    }
+    #tabs > div:hover .title {
+      display: block;
+    }
+
+    .preview-area {
+      background: #eee;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      cursor: se-resize;
+      -webkit-user-select: none;
+
+      display: -webkit-box;
+      -webkit-box-pack: center;
+      -webkit-box-align: center;
+    }
+
+    .preview-area * {
+      pointer-events: none;
+    }
+
+    .preview-area div {
+      position: relative;
+      background: rgba(0,128,255,0.25);
+      padding: 10px;
+    }
+    /*
+    .preview-area > div {
+      background: red;
+    }
+    .preview-area > div > div {
+      background: white;
+    }
+    .preview-area > div > div > div {
+      background: red;
+    }
+    .preview-area > div > div > div > div {
+      background: white;
+    }
+    .preview-area > div > div > div > div {
+      background: red;
+    }
+    */
+    .View {
+      width: 40px;
+      height: 40px;
+    }
+
+    .layout_width-match_parent {
+      width: calc(100% - 20px);
+    }
+
+    .layout_height-match_parent {
+      height: calc(100% - 20px);
+    }
+
+    /* FrameLayout */
+
+    .FrameLayout > div {
+      position: absolute;
+    }
+    .FrameLayout > .layout_width-match_parent {
+      width: calc(100% - 40px);
+    }
+    .FrameLayout > .layout_height-match_parent {
+      height: calc(100% - 40px);
+    }
+
+    .FrameLayout > .layout_gravity-center,
+    .FrameLayout > .layout_gravity-center_horizontal {
+      left: 50%;
+    }
+
+    .FrameLayout > .layout_gravity-center,
+    .FrameLayout > .layout_gravity-center_vertical {
+      top: 50%;
+    }
+
+    .FrameLayout > .layout_gravity-right {
+      right: 10px;
+    }
+
+    .FrameLayout > .layout_gravity-bottom {
+      bottom: 10px;
+    }
+
+    /* LinearLayout */
+
+    .LinearLayout {
+      display: -webkit-box;
+      -webkit-box-orient: horizontal;
+    }
+    .LinearLayout > div + div {
+      margin-left: 10px;
+    }
+    .LinearLayout.gravity-center {
+      -webkit-box-align: center;
+    }
+    .LinearLayout.orientation-vertical {
+      -webkit-box-orient: vertical;
+    }
+    .LinearLayout.orientation-vertical > div + div {
+      margin-left: 0;
+      margin-top: 10px;
+    }
+    .LinearLayout > div.layout_weight-1 {
+      -webkit-box-flex: 1;
+    }
+    .LinearLayout > div.layout_weight-2 {
+      -webkit-box-flex: 2;
+    }
+    .LinearLayout > div.layout_weight-3 {
+      -webkit-box-flex: 3;
+    }
+  </style>
+  <script>
+    $(document).ready(function() {
+      var preview = {
+        width: 400,
+        height: 300
+      };
+
+      $('.preview-area')
+          .bind('mousedown', function(evt) {
+            preview.dragging = true;
+            preview.startWidth = preview.width;
+            preview.startHeight = preview.height;
+            preview.startX = evt.pageX;
+            preview.startY = evt.pageY;
+          })
+          .bind('mousemove', function(evt) {
+            if (preview.dragging) {
+              preview.width = Math.max(1, preview.startWidth + (evt.pageX - preview.startX) * 2);
+              preview.height = Math.max(1, preview.startHeight + (evt.pageY - preview.startY) * 2);
+              updatePreview();
+            }
+          })
+          .bind('mouseup', function() {
+            preview.dragging = false;
+          });
+
+      updatePreview();
+      requestLayout();
+
+      function updatePreview() {
+        $('.preview-area > div').css({
+          width: preview.width + 'px',
+          height: preview.height + 'px'
+        });
+      }
+
+      var n = 0;
+      $('.preview-area > div').each(function() {
+        var $content = $(this);
+        var selected = (n == 0);
+        ++n;
+        if (!selected) {
+          $(this).hide();
+        }
+        var $tab = $('<div>')
+          .toggleClass('selected', selected)
+          .append($('<span>').text(n))
+          .append($('<span>').addClass('title').text($content.data('title')))
+          .click(function() {
+            $('.preview-area > div').hide();
+            $content.show();
+            requestLayout();
+            $('#tabs div').removeClass('selected');
+            $tab.addClass('selected');
+          })
+          .appendTo('#tabs');
+      });
+      $('#tabs').css('margin-top', (-$('#tabs').get(0).offsetHeight / 2) + 'px');
+
+      // JavaScript helpers
+      function requestLayout() {
+        $('.FrameLayout > .layout_gravity-center, .FrameLayout > .layout_gravity-center_horizontal').each(function() {
+          $(this).css('margin-left', (-$(this).get(0).offsetWidth / 2) + 'px');
+        });
+        $('.FrameLayout > .layout_gravity-center, .FrameLayout > .layout_gravity-center_vertical').each(function() {
+          $(this).css('margin-top', (-$(this).get(0).offsetHeight / 2) + 'px');
+        });
+      }
+    });
+  </script>
+</head>
+<body>
+
+<div class="preview-area">
+ 
+  <div class="LinearLayout orientation-vertical" data-title="LinearLayout Weights">
+    <div class="LinearLayout orientation-horizontal layout_gravity-right layout_width-match_parent">
+      <div class="View"></div>
+      <div class="View layout_weight-1"></div>
+      <div class="View"></div>
+    </div>
+    <div class="LinearLayout orientation-vertical layout_width-match_parent layout_weight-1">
+    </div>
+  </div>
+
+  <div class="FrameLayout" data-title="Simple FrameLayout">
+    <div class="View"></div>
+    <div class="View layout_gravity-center_horizontal"></div>
+    <div class="View layout_gravity-right"></div>
+
+    <div class="View layout_gravity-center_vertical"></div>
+    <div class="View layout_gravity-center"></div>
+    <div class="View layout_gravity-right layout_gravity-center_vertical"></div>
+
+    <div class="View layout_gravity-bottom"></div>
+    <div class="View layout_gravity-bottom layout_gravity-center_horizontal"></div>
+    <div class="View layout_gravity-bottom layout_gravity-right"></div>
+  </div>
+
+
+  <div class="LinearLayout orientation-vertical layout_width-match_parent layout_height-match_parent" data-title="Button Bar">
+    <div class="View layout_weight-1 layout_width-match_parent"></div>
+    <div class="LinearLayout orientation-horizontal layout_width-match_parent">
+      <div class="View layout_weight-1"></div>
+      <div class="View layout_weight-1"></div>
+    </div>
+  </div>
+
+  <div class="LinearLayout orientation-horizontal" data-title="Master/Detail Pane">
+    <div class="View layout_weight-1 layout_height-match_parent"></div>
+    <div class="View layout_weight-3 layout_height-match_parent"></div>
+  </div>
+
+</div>
+
+<div id="tabs"></div>
+</body>
+</html>
