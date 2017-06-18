@@ -1,3 +1,5 @@
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
 # Layer Visualizer
 
 A simple web-based 3D layer visualizer (useful for visualizing material UIs and other things involving depth/shadows)
